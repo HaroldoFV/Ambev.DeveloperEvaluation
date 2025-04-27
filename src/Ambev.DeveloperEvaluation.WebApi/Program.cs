@@ -60,8 +60,11 @@ public class Program
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            else
+            {
+                app.UseHttpsRedirection();
+            }
 
-            app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
