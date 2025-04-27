@@ -20,3 +20,13 @@ Content-Type: application/json
 ### Delete a user
 DELETE http://localhost:8080/api/Users/f8a13e8c-f4ac-4c93-b778-601790e4f5f3
 Accept: application/json
+
+
+### Authenticate a user
+POST http://localhost:8080/api/Auth
+Content-Type: application/json
+
+{
+  "email": "johndoe@example.com",
+  "password": "Password@123"
+}
