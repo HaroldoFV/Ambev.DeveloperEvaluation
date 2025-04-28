@@ -38,6 +38,11 @@ public class SaleItem : BaseEntity
     public Guid SaleId { get; private set; }
 
     /// <summary>
+    /// Navigation property to the associated sale.
+    /// </summary>
+    public Sale Sale { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the SaleItem class.
     /// </summary>
     /// <param name="productId">Product identifier.</param>
