@@ -26,12 +26,28 @@ public class Sale : BaseEntity, IAggregateRoot
         _items = new List<SaleItem>();
     }
 
+    public bool SaleItemExists(SaleItem item)
+    {
+        return _items.Any(s => s.ProductId == item.ProductId);
+    }
+
     public void AddItem(SaleItem item)
     {
         if (item.Quantity > 20)
             throw new InvalidOperationException("Cannot sell more than 20 items of the same product.");
 
         item.AssociateItem(Id);
+
+        if (SaleItemExists(item))
+        {
+            var existingItem = _items.FirstOrDefault(s => s.ProductId == item.ProductId);
+            if (existingItem != null)
+            {
+                existingItem.AddUnits(item.Quantity);
+                item = existingItem;
+                _items.Remove(existingItem);
+            }
+        }
 
         _items.Add(item);
         CalculateTotal();

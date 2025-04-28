@@ -45,4 +45,14 @@ public class SaleItem : BaseEntity
     {
         TotalValue = Quantity * UnitPrice * (1 - Discount);
     }
+
+    internal void AddUnits(int units)
+    {
+        if (units <= 0)
+            throw new ArgumentException("Units must be greater than zero.", nameof(units));
+
+        Quantity += units;
+        ApplyDiscount();
+        CalculateTotal();
+    }
 }

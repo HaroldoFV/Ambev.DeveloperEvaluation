@@ -112,4 +112,27 @@ public class SaleTests
         // Assert
         Assert.Equal(850, sale.TotalValue);
     }
+
+    /// <summary>
+    /// Tests that adding units to an existing item updates its quantity and recalculates the total value.
+    /// </summary>
+    [Fact(DisplayName = "Adding units to an existing item should update quantity and total value")]
+    public void Given_ExistingItem_When_UnitsAdded_Then_QuantityAndTotalValueShouldBeUpdated()
+    {
+        // Arrange
+        var sale = new Sale(Guid.NewGuid(), Guid.NewGuid());
+        var productId = Guid.NewGuid();
+        var existingItem = new SaleItem(productId, 5, 20.0m);
+        sale.AddItem(existingItem);
+
+        // Act
+        var additionalItem = new SaleItem(productId, 10, 20.0m);
+        sale.AddItem(additionalItem);
+
+        // Assert
+        Assert.Single(sale.Items);
+        var updatedItem = sale.Items.First();
+        Assert.Equal(15, updatedItem.Quantity); // 5 + 10
+        Assert.Equal(240.0m, sale.TotalValue); // 15 * 20 with 20% discount
+    }
 }
