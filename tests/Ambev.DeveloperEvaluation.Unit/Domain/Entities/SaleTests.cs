@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Enums;
 using Xunit;
 
 namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities;
@@ -26,7 +27,7 @@ public class SaleTests
         Assert.Equal(customerId, sale.CustomerId);
         Assert.Equal(branchId, sale.BranchId);
         Assert.Empty(sale.Items);
-        Assert.False(sale.IsCancelled);
+        Assert.False(sale.Status == SaleStatus.Cancelled);
         Assert.Equal(0.0m, sale.TotalValue);
     }
 
@@ -95,7 +96,7 @@ public class SaleTests
         sale.Cancel();
 
         // Assert
-        Assert.True(sale.IsCancelled);
+        Assert.Equal(SaleStatus.Cancelled, sale.Status);
     }
 
     /// <summary>
