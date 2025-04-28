@@ -1,7 +1,7 @@
 @Ambev.DeveloperEvaluation.WebApi_HostAddress = http://localhost:8080
 
 ### Get a user by ID
-GET http://localhost:8080/api/Users/f8a13e8c-f4ac-4c93-b778-601790e4f5f3
+GET http://localhost:8080/api/Users/dd8e9ee7-0eff-4f24-a518-6d838c8e5edf
 Accept: application/json
 
 ### Create a new user
@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ### Delete a user
-DELETE http://localhost:8080/api/Users/f8a13e8c-f4ac-4c93-b778-601790e4f5f3
+DELETE http://localhost:8080/api/Users/dd8e9ee7-0eff-4f24-a518-6d838c8e5edf
 Accept: application/json
 
 
