@@ -1,19 +1,20 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Enums;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Xunit;
 
 namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities;
 
 /// <summary>
 /// Contains unit tests for the Sale entity class.
-/// Tests cover item management, cancellation, and total value calculation.
+/// Tests cover initialization, item management, validation, and status updates.
 /// </summary>
 public class SaleTests
 {
     /// <summary>
-    /// Tests that the Sale constructor initializes properties correctly.
+    /// Tests that the Sale constructor initializes properties correctly with valid parameters.
     /// </summary>
-    [Fact(DisplayName = "Constructor should initialize properties correctly")]
+    [Fact(DisplayName = "Constructor should initialize properties correctly with valid parameters")]
     public void Given_ValidParameters_When_Constructed_Then_PropertiesShouldBeInitialized()
     {
         // Arrange
@@ -32,9 +33,9 @@ public class SaleTests
     }
 
     /// <summary>
-    /// Tests that adding an item updates the total value and item list.
+    /// Tests that adding a valid item updates the total value and item list.
     /// </summary>
-    [Fact(DisplayName = "Adding an item should update total value and item list")]
+    [Fact(DisplayName = "Adding a valid item should update total value and item list")]
     public void Given_ValidItem_When_Added_Then_TotalValueAndItemsShouldBeUpdated()
     {
         // Arrange
@@ -47,13 +48,13 @@ public class SaleTests
         // Assert
         Assert.Single(sale.Items);
         Assert.Equal(saleItem, sale.Items.First());
-        Assert.Equal(45.0m, sale.TotalValue);
+        Assert.Equal(45.0m, sale.TotalValue); // Assuming a 10% discount
     }
 
     /// <summary>
-    /// Tests that adding an item with a quantity exceeding the limit throws an exception.
+    /// Tests that adding an item with excessive quantity throws an exception.
     /// </summary>
-    [Fact(DisplayName = "Adding an item with quantity exceeding limit should throw exception")]
+    [Fact(DisplayName = "Adding an item with excessive quantity should throw exception")]
     public void Given_ItemWithExcessiveQuantity_When_Added_Then_ShouldThrowException()
     {
         // Arrange
@@ -61,7 +62,7 @@ public class SaleTests
         var saleItem = new SaleItem(Guid.NewGuid(), 25, 10.0m);
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => sale.AddItem(saleItem));
+        Assert.Throws<EntityValidationException>(() => sale.AddItem(saleItem));
     }
 
     /// <summary>
@@ -111,7 +112,7 @@ public class SaleTests
         sale.AddItem(new SaleItem(Guid.NewGuid(), 10, 50));
 
         // Assert
-        Assert.Equal(850, sale.TotalValue);
+        Assert.Equal(850, sale.TotalValue); // Assuming a 10% discount
     }
 
     /// <summary>
@@ -135,5 +136,19 @@ public class SaleTests
         var updatedItem = sale.Items.First();
         Assert.Equal(15, updatedItem.Quantity); // 5 + 10
         Assert.Equal(240.0m, sale.TotalValue); // 15 * 20 with 20% discount
+    }
+
+    /// <summary>
+    /// Tests that the sale cannot be modified after being cancelled.
+    /// </summary>
+    [Fact(DisplayName = "Modifying a cancelled sale should throw exception")]
+    public void Given_CancelledSale_When_Modified_Then_ShouldThrowException()
+    {
+        // Arrange
+        var sale = new Sale(Guid.NewGuid(), Guid.NewGuid());
+        sale.Cancel();
+
+        // Act & Assert
+        Assert.Throws<EntityValidationException>(() => sale.AddItem(new SaleItem(Guid.NewGuid(), 1, 10.0m)));
     }
 }

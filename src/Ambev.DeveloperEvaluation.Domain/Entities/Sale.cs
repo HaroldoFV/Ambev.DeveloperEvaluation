@@ -1,5 +1,7 @@
 using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.Enums;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
+using Ambev.DeveloperEvaluation.Domain.Validation;
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities;
 
@@ -68,6 +70,9 @@ public class Sale : BaseEntity, IAggregateRoot
         CustomerId = customerId;
         BranchId = branchId;
         Status = SaleStatus.Active;
+        _items = new List<SaleItem>();
+
+        Validate();
     }
 
     /// <summary>
@@ -84,8 +89,14 @@ public class Sale : BaseEntity, IAggregateRoot
     /// <param name="item">Sale item to add.</param>
     public void AddItem(SaleItem item)
     {
+        if (Status != SaleStatus.Active)
+            throw new EntityValidationException("Only active sales can add items.");
+
+        if (item.Quantity <= 0)
+            throw new EntityValidationException("Quantity must be greater than zero.");
+
         if (item.Quantity > 20)
-            throw new InvalidOperationException("Cannot sell more than 20 items of the same product.");
+            throw new EntityValidationException("Cannot sell more than 20 items of the same product.");
 
         item.AssociateItem(Id);
 
@@ -100,6 +111,8 @@ public class Sale : BaseEntity, IAggregateRoot
         }
 
         CalculateTotal();
+
+        Validate();
     }
 
     /// <summary>
@@ -108,14 +121,31 @@ public class Sale : BaseEntity, IAggregateRoot
     /// <param name="item">Sale item to remove.</param>
     public void RemoveItem(SaleItem item)
     {
+        if (item.Quantity <= 0)
+            throw new EntityValidationException("Quantity must be greater than zero.");
+
+        if (_items.Count == 0)
+            throw new EntityValidationException("No items to remove.");
+
         _items.Remove(item);
         CalculateTotal();
+
+        Validate();
     }
 
     /// <summary>
     /// Cancels the sale by updating its status.
     /// </summary>
-    public void Cancel() => Status = SaleStatus.Cancelled;
+    public void Cancel()
+    {
+        if (Status != SaleStatus.Active)
+        {
+            throw new EntityValidationException("Only active sales can be cancelled.");
+        }
+
+        Status = SaleStatus.Cancelled;
+        Validate();
+    }
 
     /// <summary>
     /// Calculates the total value of the sale.
@@ -124,7 +154,18 @@ public class Sale : BaseEntity, IAggregateRoot
         TotalValue = _items.Sum(item => item.TotalValue);
 
     /// <summary>
-    /// Gets the total value of the sale.
+    ///  Validates the sale entity using the SaleValidator rules.
     /// </summary>
-    public decimal GetTotalValue() => TotalValue;
+    /// <returns></returns>
+    private void Validate()
+    {
+        var validator = new SaleValidator();
+        var result = validator.Validate(this);
+
+        if (!result.IsValid)
+        {
+            var errorMessages = string.Join("; ", result.Errors.Select(x => x.ErrorMessage));
+            throw new EntityValidationException($"Sale validation failed: {errorMessages}");
+        }
+    }
 }
