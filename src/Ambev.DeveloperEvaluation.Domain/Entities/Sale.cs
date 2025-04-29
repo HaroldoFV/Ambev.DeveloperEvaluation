@@ -51,6 +51,11 @@ public class Sale : BaseEntity, IAggregateRoot
     /// </summary>
     public DateTime CreatedAt { get; private set; }
 
+    // Parameterless constructor
+    public Sale()
+    {
+    }
+
     /// <summary>
     /// Initializes a new instance of the Sale class.
     /// </summary>
@@ -117,4 +122,9 @@ public class Sale : BaseEntity, IAggregateRoot
     /// </summary>
     private void CalculateTotal() =>
         TotalValue = _items.Sum(item => item.TotalValue);
+
+    /// <summary>
+    /// Gets the total value of the sale.
+    /// </summary>
+    public decimal GetTotalValue() => TotalValue;
 }
