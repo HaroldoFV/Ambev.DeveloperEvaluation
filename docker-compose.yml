@@ -1,4 +1,6 @@
-version: '3.8'
+networks:
+  developerevaluation_network:
+    driver: bridge
 
 services:
   ambev.developerevaluation.webapi:
@@ -16,7 +18,12 @@ services:
     volumes:
       - ${USER_SECRETS_PATH}:/home/app/.microsoft/usersecrets:ro
       - ${HTTPS_PATH}:/home/app/.aspnet/https:ro
-      
+    depends_on:
+      ambev.developerevaluation.database:
+        condition: service_healthy
+    networks:
+      - developerevaluation_network
+  
   ambev.developerevaluation.database:
     container_name: ambev_developer_evaluation_database
     image: postgres:13
@@ -27,23 +34,12 @@ services:
       POSTGRES_PASSWORD: ev@luAt10n
     ports:
       - "5432:5432"
-    restart: unless-stopped
-
-  ambev.developerevaluation.nosql:
-    container_name: ambev_developer_evaluation_nosql
-    image: mongo:8.0
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: developer
-      MONGO_INITDB_ROOT_PASSWORD: ev@luAt10n
-    ports:
-      - "27017"
-
-  ambev.developerevaluation.cache:
-    container_name: ambev_developer_evaluation_cache
-    image: redis:7.4.1-alpine
-    command: redis-server --requirepass ev@luAt10n
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: developer
-      MONGO_INITDB_ROOT_PASSWORD: ev@luAt10n
-    ports:
-      - "6379"
+    restart: always
+    tty: true
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d developer_evaluation" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - developerevaluation_network

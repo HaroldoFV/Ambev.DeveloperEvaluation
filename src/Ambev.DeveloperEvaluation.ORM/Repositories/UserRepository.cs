@@ -9,13 +9,13 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories;
 /// </summary>
 public class UserRepository : IUserRepository
 {
-    private readonly DefaultContext _context;
+    private readonly SaleContext _context;
 
     /// <summary>
     /// Initializes a new instance of UserRepository
     /// </summary>
     /// <param name="context">The database context</param>
-    public UserRepository(DefaultContext context)
+    public UserRepository(SaleContext context)
     {
         _context = context;
     }

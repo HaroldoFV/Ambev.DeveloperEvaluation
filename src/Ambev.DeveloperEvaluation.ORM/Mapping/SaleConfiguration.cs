@@ -16,7 +16,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
 
         builder.Property(s => s.SaleNumber)
             .IsRequired()
-            .HasDefaultValueSql("NEXT VALUE FOR SaleSequence");
+            .HasDefaultValueSql("nextval('\"SaleSequence\"')");
 
         builder.Property(s => s.SaleDate).IsRequired();
         builder.Property(s => s.TotalValue).HasColumnType("decimal(18,2)");
