@@ -10,11 +10,13 @@ public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleRe
 {
     private readonly ISaleRepository _saleRepository;
     private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CreateSaleHandler(ISaleRepository saleRepository, IMapper mapper)
+    public CreateSaleHandler(ISaleRepository saleRepository, IMapper mapper, IUnitOfWork unitOfWork)
     {
         _saleRepository = saleRepository;
         _mapper = mapper;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<CreateSaleResult> Handle(CreateSaleCommand command, CancellationToken cancellationToken)
@@ -36,7 +38,7 @@ public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleRe
         saleItems.ForEach(i => sale.AddItem(i));
 
         await _saleRepository.CreateAsync(sale, cancellationToken);
-        await _saleRepository.UnitOfWork.CommitAsync(cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken);
 
         return _mapper.Map<CreateSaleResult>(sale);
     }
