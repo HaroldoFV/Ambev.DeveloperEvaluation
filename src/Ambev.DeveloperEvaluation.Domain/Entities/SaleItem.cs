@@ -1,4 +1,6 @@
 using Ambev.DeveloperEvaluation.Domain.Common;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
+using Ambev.DeveloperEvaluation.Domain.Validation;
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities;
 
@@ -40,7 +42,7 @@ public class SaleItem : BaseEntity
     /// <summary>
     /// Navigation property to the associated sale.
     /// </summary>
-    public Sale Sale { get; set; }
+    public Sale Sale { get; set; } = new();
 
     /// <summary>
     /// Initializes a new instance of the SaleItem class.
@@ -50,14 +52,13 @@ public class SaleItem : BaseEntity
     /// <param name="unitPrice">Unit price of the product.</param>
     public SaleItem(Guid productId, int quantity, decimal unitPrice)
     {
-        if (quantity <= 0)
-            throw new ArgumentException("Quantity must be greater than zero.");
-
         ProductId = productId;
         Quantity = quantity;
         UnitPrice = unitPrice;
         ApplyDiscount();
         CalculateTotal();
+
+        Validate();
     }
 
     /// <summary>
@@ -70,6 +71,8 @@ public class SaleItem : BaseEntity
             throw new ArgumentException("SaleId cannot be empty.");
 
         SaleId = saleId;
+
+        Validate();
     }
 
     /// <summary>
@@ -84,6 +87,8 @@ public class SaleItem : BaseEntity
         Quantity += quantity;
         ApplyDiscount();
         CalculateTotal();
+
+        Validate();
     }
 
     /// <summary>
@@ -97,6 +102,8 @@ public class SaleItem : BaseEntity
             >= 4 and < 10 => 0.10m,
             _ => 0.0m
         };
+
+        Validate();
     }
 
     /// <summary>
@@ -104,4 +111,20 @@ public class SaleItem : BaseEntity
     /// </summary>
     private void CalculateTotal() =>
         TotalValue = Quantity * UnitPrice * (1 - Discount);
+
+
+    /// <summary>
+    /// Validates the sale item.
+    ///</summary>
+    private void Validate()
+    {
+        var validator = new SaleItemValidator();
+        var result = validator.Validate(this);
+
+        if (!result.IsValid)
+        {
+            var errorMessages = string.Join("; ", result.Errors.Select(x => x.ErrorMessage));
+            throw new EntityValidationException($"SaleItem validation failed: {errorMessages}");
+        }
+    }
 }

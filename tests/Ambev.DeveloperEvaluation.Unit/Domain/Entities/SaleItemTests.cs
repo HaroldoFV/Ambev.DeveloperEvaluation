@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Xunit;
 
 namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities;
@@ -42,8 +43,8 @@ public class SaleItemTests
         var unitPrice = 10.0m;
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => new SaleItem(productId, 0, unitPrice));
-        Assert.Throws<ArgumentException>(() => new SaleItem(productId, -1, unitPrice));
+        Assert.Throws<EntityValidationException>(() => new SaleItem(productId, 0, unitPrice));
+        Assert.Throws<EntityValidationException>(() => new SaleItem(productId, -1, unitPrice));
     }
 
     /// <summary>
