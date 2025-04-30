@@ -45,8 +45,7 @@ public class Program
             builder.Services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(
-                    typeof(ApplicationLayer).Assembly,
-                    typeof(Program).Assembly
+                    typeof(ApplicationLayer).Assembly
                 );
             });
 
