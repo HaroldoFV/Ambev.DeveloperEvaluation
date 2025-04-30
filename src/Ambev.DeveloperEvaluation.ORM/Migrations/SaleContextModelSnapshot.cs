@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Ambev.DeveloperEvaluation.ORM.Migrations
 {
-    [DbContext(typeof(SaleContext))]
+    [DbContext(typeof(SaleDbContext))]
     partial class SaleContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
