@@ -11,7 +11,5 @@ public class WebApiModuleInitializer : IModuleInitializer
     {
         builder.Services.AddControllers();
         builder.Services.AddHealthChecks();
-
-        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 }
