@@ -1,5 +1,7 @@
-﻿using Ambev.DeveloperEvaluation.Application.Interfaces;
+﻿using Ambev.DeveloperEvaluation.Application;
+using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.SeedWork;
 using Ambev.DeveloperEvaluation.ORM;
 using Ambev.DeveloperEvaluation.ORM.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +18,6 @@ public class InfrastructureModuleInitializer : IModuleInitializer
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ISaleRepository, SaleRepository>();
         builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-
+        builder.Services.AddTransient<IDomainEventPublisher, DomainEventPublisher>();
     }
 }

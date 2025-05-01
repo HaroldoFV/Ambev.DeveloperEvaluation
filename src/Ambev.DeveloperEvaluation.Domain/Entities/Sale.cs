@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Enums;
+using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.SeedWork;
 using Ambev.DeveloperEvaluation.Domain.Validation;
@@ -73,6 +74,7 @@ public class Sale : AggregateRoot
         _items = new List<SaleItem>();
 
         Validate();
+        RaiseEvent(new SaleCreatedEvent(this));
     }
 
     /// <summary>
