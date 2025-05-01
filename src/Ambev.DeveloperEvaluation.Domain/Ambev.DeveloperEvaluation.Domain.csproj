@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Ambev.DeveloperEvaluation.Messages\Ambev.DeveloperEvaluation.Messages.csproj" />
     <ProjectReference Include="..\Ambev.DeveloperEvaluation.Common\Ambev.DeveloperEvaluation.Common.csproj" />
   </ItemGroup>
 
