@@ -1,6 +1,6 @@
-using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
+using Ambev.DeveloperEvaluation.Domain.SeedWork;
 using Ambev.DeveloperEvaluation.Domain.Validation;
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities;
@@ -9,7 +9,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities;
 /// Represents a sale transaction in the system.
 /// This entity follows domain-driven design principles and includes business rules validation.
 /// </summary>
-public class Sale : BaseEntity, IAggregateRoot
+public class Sale : AggregateRoot
 {
     /// <summary>
     /// Unique sale number for identification.

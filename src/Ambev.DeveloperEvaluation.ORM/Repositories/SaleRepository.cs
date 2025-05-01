@@ -1,60 +1,57 @@
+using Ambev.DeveloperEvaluation.Application.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.SeedWork.SearchableRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ambev.DeveloperEvaluation.ORM.Repositories;
 
 public class SaleRepository : ISaleRepository
 {
-    private readonly SaleContext _context;
+    private readonly SaleDbContext _dbContext;
 
-    public SaleRepository(SaleContext context)
+    public SaleRepository(SaleDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
 
-    public IUnitOfWork UnitOfWork => _context;
-
-    public async Task<Sale?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Sale> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _context.Sales
+        var sale = await _dbContext.Sales
             .Include(s => s.Items)
             .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+        NotFoundException.ThrowIfNull(sale, $"Sale '{id}' not found.");
+
+        return sale!;
     }
 
-    public async Task<IEnumerable<Sale>> GetAllReadOnlyAsync(CancellationToken cancellationToken = default)
+    public Task DeleteAsync(Sale sale, CancellationToken cancellationToken)
     {
-        return await _context.Sales
-            .Include(s => s.Items)
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        _dbContext.Sales.Remove(sale);
+        return Task.CompletedTask;
     }
 
-    public async Task<Sale> CreateAsync(Sale sale, CancellationToken cancellationToken = default)
+    // public async Task<IEnumerable<Sale>> GetAllReadOnlyAsync(CancellationToken cancellationToken = default)
+    // {
+    //     return await _dbContext.Sales
+    //         .Include(s => s.Items)
+    //         .AsNoTracking()
+    //         .ToListAsync(cancellationToken);
+    // }
+
+    public async Task CreateAsync(Sale sale, CancellationToken cancellationToken = default)
     {
-        await _context.Sales.AddAsync(sale, cancellationToken);
-        return sale;
+        await _dbContext.Sales.AddAsync(sale, cancellationToken);
     }
 
     public Task UpdateAsync(Sale sale, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(_context.Sales.Update(sale));
+        return Task.FromResult(_dbContext.Sales.Update(sale));
     }
 
-    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public Task<SearchOutput<Sale>> Search(SearchInput input, CancellationToken cancellationToken)
     {
-        var sale = await GetByIdAsync(id, cancellationToken);
-        if (sale == null)
-            return false;
-
-        _context.Sales.Remove(sale);
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
-    }
-
-    public void Dispose()
-    {
-        _context?.Dispose();
+        throw new NotImplementedException();
     }
 }
