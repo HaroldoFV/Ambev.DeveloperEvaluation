@@ -18,6 +18,11 @@ rabbitmqadmin -u "$RABBITMQ_DEFAULT_USER" -p "$RABBITMQ_DEFAULT_PASS" \
     declare queue name=sale.modified.queue durable=true
 
 rabbitmqadmin -u "$RABBITMQ_DEFAULT_USER" -p "$RABBITMQ_DEFAULT_PASS" \
+      --host=localhost \
+      --port=15672 \
+      declare queue name=sale.cancelled.queue durable=true
+
+rabbitmqadmin -u "$RABBITMQ_DEFAULT_USER" -p "$RABBITMQ_DEFAULT_PASS" \
     --host=localhost \
     --port=15672 \
     declare binding source=sale.events destination=sale.created.queue \
@@ -28,3 +33,9 @@ rabbitmqadmin -u "$RABBITMQ_DEFAULT_USER" -p "$RABBITMQ_DEFAULT_PASS" \
     --port=15672 \
     declare binding source=sale.events destination=sale.modified.queue \
     destination_type=queue routing_key="sale.modified"
+  
+rabbitmqadmin -u "$RABBITMQ_DEFAULT_USER" -p "$RABBITMQ_DEFAULT_PASS" \
+    --host=localhost \
+    --port=15672 \
+    declare binding source=sale.events destination=sale.cancelled.queue \
+    destination_type=queue routing_key="sale.cancelled"
