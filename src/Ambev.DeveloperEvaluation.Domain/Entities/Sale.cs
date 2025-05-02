@@ -74,7 +74,6 @@ public class Sale : AggregateRoot
         _items = new List<SaleItem>();
 
         Validate();
-        RaiseEvent(new SaleCreatedEvent(this));
     }
 
     /// <summary>

@@ -1,5 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Application;
+using Ambev.DeveloperEvaluation.Application.EventHandlers;
 using Ambev.DeveloperEvaluation.Application.Interfaces;
+using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.SeedWork;
 using Ambev.DeveloperEvaluation.ORM;
@@ -19,5 +21,6 @@ public class InfrastructureModuleInitializer : IModuleInitializer
         builder.Services.AddScoped<ISaleRepository, SaleRepository>();
         builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
         builder.Services.AddTransient<IDomainEventPublisher, DomainEventPublisher>();
+        builder.Services.AddScoped<IDomainEventHandler<SaleCreatedEvent>, SaleCreatedEventHandler>();
     }
 }

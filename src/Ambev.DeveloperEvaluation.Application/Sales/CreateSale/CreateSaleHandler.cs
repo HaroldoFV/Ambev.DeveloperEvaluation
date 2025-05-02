@@ -1,5 +1,6 @@
 using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
 using MediatR;
@@ -39,6 +40,9 @@ public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleRe
         saleItems.ForEach(i => sale.AddItem(i));
 
         await _saleRepository.CreateAsync(sale, cancellationToken);
+
+        sale.RaiseEvent(new SaleCreatedEvent(sale));
+
         await _unitOfWork.CommitAsync(cancellationToken);
 
         return _mapper.Map<CreateSaleResult>(sale);
