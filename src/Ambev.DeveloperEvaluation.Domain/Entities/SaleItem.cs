@@ -92,6 +92,20 @@ public class SaleItem : BaseEntity
     }
 
     /// <summary>
+    ///  Updates the sale item with new quantity and unit price.
+    /// </summary>
+    public void UpdateItem(int quantity, decimal unitPrice)
+    {
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+
+        ApplyDiscount();
+        CalculateTotal();
+
+        Validate();
+    }
+
+    /// <summary>
     /// Applies a discount based on the quantity of the product.
     /// </summary>
     private void ApplyDiscount()

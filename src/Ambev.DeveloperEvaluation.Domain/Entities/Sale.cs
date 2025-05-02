@@ -149,6 +149,46 @@ public class Sale : AggregateRoot
     }
 
     /// <summary>
+    ///  Updates the customer associated with the sale.
+    /// </summary>
+    public void UpdateCustomer(Guid customerId)
+    {
+        CustomerId = customerId;
+
+        Validate();
+    }
+
+    /// <summary>
+    ///  Updates the branch associated with the sale.
+    ///  </summary>
+    public void UpdateBranch(Guid branchId)
+    {
+        BranchId = branchId;
+
+        Validate();
+    }
+
+    /// <summary>
+    ///  Adds or updates an item in the sale.
+    /// </summary>
+    public void AddOrUpdateItem(SaleItem item)
+    {
+        if (SaleItemExists(item))
+        {
+            var existingItem = _items.First(s => s.ProductId == item.ProductId);
+            existingItem.UpdateItem(item.Quantity, item.UnitPrice);
+        }
+        else
+        {
+            _items.Add(item);
+        }
+
+        CalculateTotal();
+
+        Validate();
+    }
+
+    /// <summary>
     /// Calculates the total value of the sale.
     /// </summary>
     private void CalculateTotal() =>

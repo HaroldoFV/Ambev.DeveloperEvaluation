@@ -22,5 +22,6 @@ public class InfrastructureModuleInitializer : IModuleInitializer
         builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
         builder.Services.AddTransient<IDomainEventPublisher, DomainEventPublisher>();
         builder.Services.AddScoped<IDomainEventHandler<SaleCreatedEvent>, SaleCreatedEventHandler>();
+        builder.Services.AddScoped<IDomainEventHandler<SaleModifiedEvent>, SaleModifiedEventHandler>();
     }
 }
