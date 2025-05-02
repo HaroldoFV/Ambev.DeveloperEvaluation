@@ -1,3 +1,4 @@
+using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.Common.Validation;
@@ -108,6 +109,29 @@ public class SalesController : ControllerBase
         {
             Success = true,
             Message = "Sale updated successfully.",
+            Data = result
+        });
+    }
+
+    /// <summary>
+    /// Cancels an existing sale.
+    /// </summary>
+    /// <param name="id">The sale ID to cancel.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The cancelled sale details.</returns>
+    [HttpPut("{id:guid}/cancel")]
+    [ProducesResponseType(typeof(ApiResponseWithData<CancelSaleResult>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CancelSale(Guid id, CancellationToken cancellationToken)
+    {
+        var command = new CancelSaleCommand { SaleId = id };
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(new ApiResponseWithData<CancelSaleResult>
+        {
+            Success = true,
+            Message = "Sale cancelled successfully.",
             Data = result
         });
     }
