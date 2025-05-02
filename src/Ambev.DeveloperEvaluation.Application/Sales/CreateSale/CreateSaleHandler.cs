@@ -33,7 +33,7 @@ public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleRe
         (
             item.ProductId,
             item.Quantity,
-            item.Price
+            item.UnitPrice
         )).ToList();
 
         var sale = new Sale(command.CustomerId, command.BranchId);

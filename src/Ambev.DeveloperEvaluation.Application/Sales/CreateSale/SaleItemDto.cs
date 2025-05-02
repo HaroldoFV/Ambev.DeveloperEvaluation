@@ -20,5 +20,5 @@ public class SaleItemDto
     /// <summary>
     /// Gets or sets the price of the product.
     /// </summary>
-    public decimal Price { get; set; }
+    public decimal UnitPrice { get; set; }
 }
