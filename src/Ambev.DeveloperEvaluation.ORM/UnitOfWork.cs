@@ -8,13 +8,16 @@ public class UnitOfWork
     : IUnitOfWork
 {
     private readonly SaleDbContext _context;
+    private readonly IDomainEventPublisher _publisher;
     private readonly ILogger<UnitOfWork> _logger;
 
     public UnitOfWork(
         SaleDbContext context,
+        IDomainEventPublisher publisher,
         ILogger<UnitOfWork> logger)
     {
         _context = context;
+        _publisher = publisher;
         _logger = logger;
     }
 
@@ -22,11 +25,26 @@ public class UnitOfWork
     {
         var aggregateRoots = _context.ChangeTracker
             .Entries<AggregateRoot>()
+            .Where(entry => entry.Entity.Events.Any())
             .Select(entry => entry.Entity);
 
+        var aggregates = aggregateRoots as AggregateRoot[] ?? aggregateRoots.ToArray();
         _logger.LogInformation(
-            "Committing changes for {Count} aggregate roots.",
-            aggregateRoots.Count());
+            "Commit: {AggregatesCount} aggregate roots with events.",
+            aggregates.Count());
+
+        var events = aggregates
+            .SelectMany(aggregate => aggregate.Events);
+
+        var domainEvents = events as DomainEvent[] ?? events.ToArray();
+        _logger.LogInformation(
+            "Commit: {EventsCount} events raised.", domainEvents.Count());
+
+        foreach (var @event in domainEvents)
+            await _publisher.PublishAsync((dynamic)@event, cancellationToken);
+
+        foreach (var aggregate in aggregates)
+            aggregate.ClearEvents();
 
         await _context.SaveChangesAsync(cancellationToken);
     }

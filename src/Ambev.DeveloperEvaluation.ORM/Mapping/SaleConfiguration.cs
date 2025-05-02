@@ -31,5 +31,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
             .HasMaxLength(20);
 
         builder.Property(s => s.CreatedAt).IsRequired();
+
+        builder.Ignore(s => s.Events);
     }
 }
