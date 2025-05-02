@@ -27,11 +27,10 @@ services:
   ambev.developerevaluation.database:
     container_name: ambev_developer_evaluation_database
     image: postgres:13
-
     environment:
-      POSTGRES_DB: developer_evaluation
-      POSTGRES_USER: developer
-      POSTGRES_PASSWORD: ev@luAt10n
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     restart: always
@@ -43,3 +42,30 @@ services:
       retries: 5
     networks:
       - developerevaluation_network
+  
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./docker/rabbitmq/init.sh:/init.sh
+      - rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_DEFAULT_VHOST}
+      RABBITMQ_LOAD_DEFINITIONS: /etc/rabbitmq/definitions.json
+    command: >
+      bash -c "
+        docker-entrypoint.sh rabbitmq-server &
+        sleep 30 &&
+        chmod +x /init.sh &&
+        /init.sh && wait
+      "
+    networks:
+      - developerevaluation_network
+
+volumes:
+  rabbitmq_data:
