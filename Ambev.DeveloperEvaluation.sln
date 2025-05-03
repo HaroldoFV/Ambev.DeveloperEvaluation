@@ -65,6 +65,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rabbitmq", "rabbitmq", "{A6
 		docker\rabbitmq\init.sh = docker\rabbitmq\init.sh
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{34521A6A-B4CA-4EF3-AE55-9F96A66CC073}"
+	ProjectSection(SolutionItems) = preProject
+		src\sql\init-db.sql = src\sql\init-db.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +148,7 @@ Global
 		{040F270A-3788-4E88-99A6-F236286DE3E7} = {109D499F-685E-4034-BA6D-C4D87F09AC1C}
 		{9C0E9F6D-A214-4775-9DA0-7A7F2626C375} = {BD3812F8-8783-42C6-B231-8A032EF9481F}
 		{A6ED4812-F051-4CE2-937E-D649C095E002} = {476A6C0D-CB32-4BF8-A25A-414C3A1749B9}
+		{34521A6A-B4CA-4EF3-AE55-9F96A66CC073} = {109D499F-685E-4034-BA6D-C4D87F09AC1C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {13EAB81A-C6B2-4C22-B4DE-C6603FC445B6}
