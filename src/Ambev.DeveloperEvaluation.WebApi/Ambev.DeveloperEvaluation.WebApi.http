@@ -1,6 +1,32 @@
-@Ambev.DeveloperEvaluation.WebApi_HostAddress = http://localhost:5119
+@Ambev.DeveloperEvaluation.WebApi_HostAddress = http://localhost:8080
 
-GET {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/weatherforecast/
+### Get a user by ID
+GET http://localhost:8080/api/Users/266577ac-7e2d-4cd7-8abc-7dfed6ab0485
 Accept: application/json
 
-###
+### Create a new user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "JohnDoe",
+  "email": "johndoe@example.com",
+  "phone": "11994730392",
+  "password": "Password@123",
+  "role": 1,
+  "status": 1
+}
+
+### Delete a user
+DELETE http://localhost:8080/api/Users/266577ac-7e2d-4cd7-8abc-7dfed6ab0485
+Accept: application/json
+
+
+### Authenticate a user
+POST http://localhost:8080/api/Auth
+Content-Type: application/json
+
+{
+  "email": "johndoe@example.com",
+  "password": "Password@123"
+}

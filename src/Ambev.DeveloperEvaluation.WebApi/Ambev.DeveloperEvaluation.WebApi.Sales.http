@@ -1,0 +1,195 @@
+@baseUrl = http://localhost:5119/api
+
+### Create Sale - Success
+POST {{baseUrl}}/sales
+Content-Type: application/json
+
+{
+  "customerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": [
+    {
+      "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": 2,
+      "unitPrice": 10.50
+    }
+  ]
+}
+
+### Create Sale - Invalid (Empty Items)
+POST {{baseUrl}}/sales
+Content-Type: application/json
+
+{
+  "customerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": []
+}
+
+### Create Sale - Invalid (Missing CustomerId)
+POST {{baseUrl}}/sales
+Content-Type: application/json
+
+{
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": [
+    {
+      "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": 2,
+      "unitPrice": 10.50
+    }
+  ]
+}
+
+### Update Sale - Success
+PUT {{baseUrl}}/sales/6585881f-0a45-4b12-95ab-c5ee51ff1d85
+Content-Type: application/json
+
+{
+  "saleId": "6585881f-0a45-4b12-95ab-c5ee51ff1d85",
+  "customerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": [
+    {
+      "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": 3,
+      "unitPrice": 15.75
+    }
+  ]
+}
+
+### Update Sale - Invalid ID Mismatch
+PUT {{baseUrl}}/sales/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Content-Type: application/json
+
+{
+  "saleId": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
+  "customerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": [
+    {
+      "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": 3,
+      "unitPrice": 15.75
+    }
+  ]
+}
+
+### Update Sale - Invalid (Empty Items)
+PUT {{baseUrl}}/sales/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Content-Type: application/json
+
+{
+  "saleId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "customerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": []
+}
+
+### Update Sale - Invalid (Negative Quantity)
+PUT {{baseUrl}}/sales/3fa85f64-5717-4562-b3fc-2c963f66afa6
+Content-Type: application/json
+
+{
+  "saleId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "customerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": [
+    {
+      "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": -1,
+      "unitPrice": 15.75
+    }
+  ]
+}
+
+### Update Sale - Not Found
+PUT {{baseUrl}}/sales/3fa85f64-5717-4562-b3fc-2c963f66afa9
+Content-Type: application/json
+
+{
+  "saleId": "3fa85f64-5717-4562-b3fc-2c963f66afa9",
+  "customerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": [
+    {
+      "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": 1,
+      "unitPrice": 15.75
+    }
+  ]
+}
+
+
+
+### Create Sale with 2 items of $10.50
+POST http://localhost:5119/api/sales
+Content-Type: application/json
+
+{
+  "customerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": [
+    {
+      "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": 2,
+      "unitPrice": 10.50
+    }
+  ]
+}
+
+### Update Sale - Test discount calculation (Quantity 5 should get 10% discount)
+PUT http://localhost:5119/api/sales/5b3139cf-d24e-4826-a612-3ac13363578c
+Content-Type: application/json
+
+{
+  "saleId": "5b3139cf-d24e-4826-a612-3ac13363578c",
+  "customerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": [
+    {
+      "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": 5,
+      "unitPrice": 10.50
+    }
+  ]
+}
+
+### Update Sale - Test large quantity discount (Quantity 15 should get 20% discount)
+PUT http://localhost:5119/api/sales/9ef294ef-cd34-43a9-aa61-4e37100afdb7
+Content-Type: application/json
+
+{
+  "saleId": "9ef294ef-cd34-43a9-aa61-4e37100afdb7",
+  "customerId": "9ef294ef-cd34-43a9-aa61-4e37100afdb7",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "items": [
+    {
+      "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": 15,
+      "unitPrice": 10.50
+    }
+  ]
+}
+
+
+
+### Cancel Sale
+PUT  http://localhost:5119/api/sales/28c97e4a-66db-438d-b3e2-05fe2b80f093/cancel
+Content-Type: application/json
+
+
+
+### Cancel Sale Item
+PUT http://localhost:5119/api/sales/878be5b6-b551-4e65-95c4-8d24dc2537a4/items/a577b40b-6767-4abc-9087-39812c0e5d1c/cancel
+Content-Type: application/json
+
+
+
+### List Sales (default parameters)
+GET http://localhost:5119/api/Sales
+Accept: application/json
+
+### List Sales with pagination
+GET http://localhost:5119/api/sales?page=1&perPage=10
+Accept: application/json
