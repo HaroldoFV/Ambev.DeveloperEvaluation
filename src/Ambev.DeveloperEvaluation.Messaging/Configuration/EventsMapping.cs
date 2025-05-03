@@ -10,7 +10,8 @@ internal static class EventsMapping
         { nameof(SaleModifiedEvent), "sale.modified" },
         {
             nameof(SaleCancelledEvent), "sale.cancelled"
-        }
+        },
+        { nameof(ItemCancelledEvent), "sale.item.cancelled" }
     };
 
     public static string GetRoutingKey<T>() => _routingKeys[typeof(T).Name];

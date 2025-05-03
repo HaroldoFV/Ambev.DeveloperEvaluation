@@ -1,3 +1,4 @@
+using Ambev.DeveloperEvaluation.Application.Sales.CancelItem;
 using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
@@ -132,6 +133,30 @@ public class SalesController : ControllerBase
         {
             Success = true,
             Message = "Sale cancelled successfully.",
+            Data = result
+        });
+    }
+
+    /// <summary>
+    /// Cancels a specific item in a sale.
+    /// </summary>
+    /// <param name="id">The sale ID.</param>
+    /// <param name="itemId">The item ID to cancel.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The cancelled item details.</returns>
+    [HttpPut("{id:guid}/items/{itemId:guid}/cancel")]
+    [ProducesResponseType(typeof(ApiResponseWithData<CancelItemResult>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CancelItem(Guid id, Guid itemId, CancellationToken cancellationToken)
+    {
+        var command = new CancelItemCommand { SaleId = id, ItemId = itemId };
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(new ApiResponseWithData<CancelItemResult>
+        {
+            Success = true,
+            Message = "Item cancelled successfully.",
             Data = result
         });
     }

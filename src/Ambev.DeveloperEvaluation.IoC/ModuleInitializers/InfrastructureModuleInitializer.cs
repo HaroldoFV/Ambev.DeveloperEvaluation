@@ -24,5 +24,6 @@ public class InfrastructureModuleInitializer : IModuleInitializer
         builder.Services.AddScoped<IDomainEventHandler<SaleCreatedEvent>, SaleCreatedEventHandler>();
         builder.Services.AddScoped<IDomainEventHandler<SaleModifiedEvent>, SaleModifiedEventHandler>();
         builder.Services.AddScoped<IDomainEventHandler<SaleCancelledEvent>, SaleCancelledEventHandler>();
+        builder.Services.AddScoped<IDomainEventHandler<ItemCancelledEvent>, ItemCancelledEventHandler>();
     }
 }
