@@ -1,6 +1,5 @@
 # Developer Evaluation Project
 
-
 ## Tecnologias Utilizadas
 
 - **.NET 8**: Framework de desenvolvimento para a criação de aplicações web e APIs.
@@ -9,8 +8,8 @@
   produção.
 - **RabbitMQ**: Sistema de mensageria para comunicação assíncrona entre serviços.
 
-
 ## Informações do Banco de Dados
+
 - Database: developer_evaluation
 - User: developer
 - Tables:
@@ -20,9 +19,10 @@
     - __EFMigrationsHistory
 
 ## Estrutura do Projeto
+
 - `/backend` - Backend API
     - `/src/sql` - Database initialization scripts
-  
+
 ## Como Executar
 
 O projeto pode ser executado utilizando Docker e Docker Compose, garantindo assim, que o ambiente de desenvolvimento
@@ -50,48 +50,97 @@ seja fácil de configurar e replicar. Siga as instruções abaixo para configura
     ```
     http://localhost:8080/swagger/index.html
     ```
+
 ### Testando Endpoints da API
 
-O projeto inclui arquivos `.http` que podem ser usados para testar os endpoints da API diretamente do seu IDE (como Rider ou Visual Studio Code). Estes arquivos estão localizados em:
+O projeto inclui arquivos `.http` que podem ser usados para testar os endpoints da API diretamente do seu IDE (como
+Rider ou Visual Studio Code). Estes arquivos estão localizados em:
+
 - `src/Ambev.DeveloperEvaluation.WebApi` - Endpoints relacionados a usuários e vendas
 
 Para usar estes arquivos:
+
 1. Abra-os no seu IDE
 2. Clique no link "Send Request" acima de cada requisição
 3. Visualize a resposta diretamente no IDE
 
-### ⚠️ Observação sobre arquivos sensíveis
-Os arquivos appsettings.json e .env foram incluídos no versionamento exclusivamente por se tratar de um teste técnico.
-Em ambientes reais de produção, segredos e configurações sensíveis nunca devem ser versionados — o ideal é utilizar variáveis de ambiente ou ferramentas como Azure Key Vault, AWS Secrets Manager ou o dotnet user-secrets durante o desenvolvimento local.
+## Mensagens e Eventos de Domínio (RabbitMQ)
+
+### Configuração do RabbitMQ
+
+As credenciais de acesso ao RabbitMQ estão definidas no arquivo `.env` na raiz do projeto:
+
+### Acessando o RabbitMQ Management
+
+- URL: http://localhost:15672
+- Usuário: admin
+- Senha: @123456
+
+### Domain Events Implementados
+
+O projeto utiliza Domain Events (DDD) para publicar mensagens no RabbitMQ nos seguintes cenários:
+
+1. Eventos de Venda:
+    - `SaleCreatedEvent`: Publicado quando uma nova venda é criada
+    - `SaleModifiedEvent`: Publicado quando uma venda é atualizada
+    - `SaleCanceledEvent`: Publicado quando uma venda é cancelada
+    - `ItemCancelledEvent`: Publicado quando um item de venda é cancelado
+
+### Monitoramento de Mensagens
+
+Para visualizar as mensagens publicadas:
+
+1. Acesse o RabbitMQ Management
+2. Navegue até a aba "Queues"
+3. Selecione a fila desejada para ver as mensagens
+    - `sale.created.queue` - Fila de vendas criadas
+    - `sale.modified.queue` - Fila de vendas atualizadas
+    - `sale.cancelled.queue` - Fila de vendas canceladas
+    - `sale.item.cancelled.queue` - Fila de itens de venda cancelados
 
 
-### Implementações Pendentes
+## Implementações Pendentes
 
 ### 1. Modelagem de Entidades
+
 - Entidade `Categoria`
 - Entidade `Produto`
 - Entidade `Cliente`
 - Relacionamentos entre estas entidades e as já existentes
 
 ### 2. Eventos na Entidade User
+
 - Implementação dos eventos de domínio para a entidade User
 - Tratamento dos eventos relacionados ao ciclo de vida do usuário
 
 ### 3. Padrões de API
+
 Na camada `src/Ambev.DeveloperEvaluation.WebApi`:
+
 - Refatorar para seguir o padrão existente no projeto
 - Remover uso direto dos commands/results da camada de application
 
-### 4. Testes Pendentes
+
+### 5. Testes Pendentes
 
 #### Testes de Integração
+
 - Testes de integração com banco de dados
 - Testes de integração entre camadas
 - Testes de fluxos completos de negócio
 - Testes de persistência
 
 #### Testes End-to-End
+
 - Testes dos endpoints da API
 - Testes de fluxos completos via API
 - Testes de cenários de erro
 - Testes de performance
+
+## ⚠️ Observação sobre arquivos sensíveis
+
+Os arquivos appsettings.json e .env foram incluídos no versionamento exclusivamente por se tratar de um teste técnico.
+Em ambientes reais de produção, segredos e configurações sensíveis nunca devem ser versionados — o ideal é utilizar
+variáveis de ambiente ou ferramentas como Azure Key Vault, AWS Secrets Manager ou o dotnet user-secrets durante o
+desenvolvimento local.
+
