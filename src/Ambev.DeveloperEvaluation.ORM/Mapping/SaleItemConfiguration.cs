@@ -17,6 +17,13 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
         builder.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)");
         builder.Property(i => i.TotalValue).HasColumnType("decimal(18,2)");
 
+        builder.Property(x => x.IsCancelled)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(x => x.CancelledAt)
+            .IsRequired(false);
+
         builder.HasOne(i => i.Sale)
             .WithMany(i => i.Items);
     }

@@ -177,3 +177,9 @@ Content-Type: application/json
 ### Cancel Sale
 PUT  http://localhost:5119/api/sales/28c97e4a-66db-438d-b3e2-05fe2b80f093/cancel
 Content-Type: application/json
+
+
+
+### Cancel Sale Item
+PUT http://localhost:5119/api/sales/878be5b6-b551-4e65-95c4-8d24dc2537a4/items/a577b40b-6767-4abc-9087-39812c0e5d1c/cancel
+Content-Type: application/json

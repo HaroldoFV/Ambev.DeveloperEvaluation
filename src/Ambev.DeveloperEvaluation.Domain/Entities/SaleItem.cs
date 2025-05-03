@@ -40,6 +40,16 @@ public class SaleItem : BaseEntity
     public Guid SaleId { get; private set; }
 
     /// <summary>
+    ///  Indicates whether the sale item is cancelled.
+    /// </summary>
+    public bool IsCancelled { get; private set; }
+
+    /// <summary>
+    /// Date and time when the sale item was cancelled.
+    /// </summary>
+    public DateTime? CancelledAt { get; private set; }
+
+    /// <summary>
     /// Navigation property to the associated sale.
     /// </summary>
     public Sale Sale { get; set; } = new();
@@ -55,6 +65,7 @@ public class SaleItem : BaseEntity
         ProductId = productId;
         Quantity = quantity;
         UnitPrice = unitPrice;
+        IsCancelled = false;
         ApplyDiscount();
         CalculateTotal();
 
@@ -126,6 +137,19 @@ public class SaleItem : BaseEntity
     private void CalculateTotal() =>
         TotalValue = Quantity * UnitPrice * (1 - Discount);
 
+    /// <summary>
+    ///  Cancels the sale item.
+    /// </summary>
+    public void Cancel()
+    {
+        if (IsCancelled)
+            throw new EntityValidationException("Item is already cancelled");
+
+        IsCancelled = true;
+        CancelledAt = DateTime.UtcNow;
+
+        Validate();
+    }
 
     /// <summary>
     /// Validates the sale item.
