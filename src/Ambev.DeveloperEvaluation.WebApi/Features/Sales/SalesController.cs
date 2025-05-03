@@ -1,8 +1,10 @@
 using Ambev.DeveloperEvaluation.Application.Sales.CancelItem;
 using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Application.Sales.ListSales;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.Common.Validation;
+using Ambev.DeveloperEvaluation.Domain.SeedWork.SearchableRepository;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +19,10 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales;
 public class SalesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private const int MaxPageSize = 100;
+    private const int DefaultPageSize = 15;
+    private const int MaxPageNumber = 1000;
+
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SalesController"/> class.
@@ -159,5 +165,96 @@ public class SalesController : ControllerBase
             Message = "Item cancelled successfully.",
             Data = result
         });
+    }
+
+
+    /// <summary>
+    /// List sales with pagination, search and ordering capabilities
+    /// </summary>
+    /// <param name="page">Page number (starting at 1)</param>
+    /// <param name="perPage">Items per page (max 100)</param>
+    /// <param name="search">Optional search term</param>
+    /// <param name="sort">Optional field name for sorting</param>
+    /// <param name="dir">Sort direction (Asc or Desc)</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Paginated list of sales</returns>
+    /// <response code="200">Returns the paginated list of sales</response>
+    /// <response code="400">If the request parameters are invalid</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(ListSalesOutput), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> List(
+        [FromQuery] int? page = null,
+        [FromQuery] int? perPage = null,
+        [FromQuery] string? search = null,
+        [FromQuery] string? sort = null,
+        [FromQuery] SearchOrder? dir = null,
+        CancellationToken cancellationToken = default)
+    {
+        var pageNumber = page ?? 1;
+        var pageSize = perPage ?? DefaultPageSize;
+
+        // Validação do número da página
+        if (pageNumber <= 0)
+        {
+            return BadRequest(new
+            {
+                error = "Page number must be greater than 0"
+            });
+        }
+
+        if (pageNumber > MaxPageNumber)
+        {
+            return BadRequest(new
+            {
+                error = $"Page number cannot be greater than {MaxPageNumber}"
+            });
+        }
+
+        // Validação do tamanho da página
+        if (pageSize <= 0)
+        {
+            return BadRequest(new
+            {
+                error = "Page size must be greater than 0"
+            });
+        }
+
+        if (pageSize > MaxPageSize)
+        {
+            return BadRequest(new
+            {
+                error = $"Page size cannot be greater than {MaxPageSize}"
+            });
+        }
+
+        // Validação do parâmetro de busca
+        if (!string.IsNullOrEmpty(search) && search.Length > 100)
+        {
+            return BadRequest(new
+            {
+                error = "Search term cannot be longer than 100 characters"
+            });
+        }
+
+        // Validação do parâmetro de ordenação
+        if (!string.IsNullOrEmpty(sort) && sort.Length > 50)
+        {
+            return BadRequest(new
+            {
+                error = "Sort parameter cannot be longer than 50 characters"
+            });
+        }
+
+        var command = new ListSalesCommand(
+            pageNumber,
+            pageSize,
+            search,
+            sort,
+            dir ?? SearchOrder.Asc
+        );
+
+        var output = await _mediator.Send(command, cancellationToken);
+        return Ok(output);
     }
 }

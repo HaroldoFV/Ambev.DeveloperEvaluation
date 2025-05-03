@@ -50,8 +50,21 @@ public class SaleRepository : ISaleRepository
         return Task.FromResult(_dbContext.Sales.Update(sale));
     }
 
-    public Task<SearchOutput<Sale>> Search(SearchInput input, CancellationToken cancellationToken)
+    public async Task<SearchOutput<Sale>> Search(SearchInput input, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var toSkip = (input.Page - 1) * input.PerPage;
+        var query = _dbContext.Sales.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(input.Search))
+            query = query.Where(x => x.Id.ToString().Contains(input.Search));
+
+        var total = await query.CountAsync(cancellationToken);
+        var items = await query
+            .Include(s => s.Items)
+            .Skip(toSkip)
+            .Take(input.PerPage)
+            .ToListAsync(cancellationToken);
+
+        return new SearchOutput<Sale>(input.Page, input.PerPage, total, items);
     }
 }
