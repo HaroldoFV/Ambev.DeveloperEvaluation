@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:5119/api
+@baseUrl = http://localhost:8080/api
 
 ### Create Sale - Success
 POST {{baseUrl}}/sales
@@ -123,7 +123,7 @@ Content-Type: application/json
 
 
 ### Create Sale with 2 items of $10.50
-POST http://localhost:5119/api/sales
+POST {{baseUrl}}/api/sales
 Content-Type: application/json
 
 {
@@ -139,7 +139,7 @@ Content-Type: application/json
 }
 
 ### Update Sale - Test discount calculation (Quantity 5 should get 10% discount)
-PUT http://localhost:5119/api/sales/5b3139cf-d24e-4826-a612-3ac13363578c
+PUT {{baseUrl}}/api/sales/5b3139cf-d24e-4826-a612-3ac13363578c
 Content-Type: application/json
 
 {
@@ -156,7 +156,7 @@ Content-Type: application/json
 }
 
 ### Update Sale - Test large quantity discount (Quantity 15 should get 20% discount)
-PUT http://localhost:5119/api/sales/9ef294ef-cd34-43a9-aa61-4e37100afdb7
+PUT {{baseUrl}}/api/sales/9ef294ef-cd34-43a9-aa61-4e37100afdb7
 Content-Type: application/json
 
 {
@@ -175,21 +175,21 @@ Content-Type: application/json
 
 
 ### Cancel Sale
-PUT  http://localhost:5119/api/sales/28c97e4a-66db-438d-b3e2-05fe2b80f093/cancel
+PUT  {{baseUrl}}/api/sales/28c97e4a-66db-438d-b3e2-05fe2b80f093/cancel
 Content-Type: application/json
 
 
 
 ### Cancel Sale Item
-PUT http://localhost:5119/api/sales/878be5b6-b551-4e65-95c4-8d24dc2537a4/items/a577b40b-6767-4abc-9087-39812c0e5d1c/cancel
+PUT {{baseUrl}}/api/sales/878be5b6-b551-4e65-95c4-8d24dc2537a4/items/a577b40b-6767-4abc-9087-39812c0e5d1c/cancel
 Content-Type: application/json
 
 
 
 ### List Sales (default parameters)
-GET http://localhost:5119/api/Sales
+GET {{baseUrl}}/api/Sales
 Accept: application/json
 
 ### List Sales with pagination
-GET http://localhost:5119/api/sales?page=1&perPage=10
+GET {{baseUrl}}/api/sales?page=1&perPage=10
 Accept: application/json
